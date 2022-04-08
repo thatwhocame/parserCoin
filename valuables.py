@@ -1,3 +1,2 @@
 telegramApi = ''
-
-coinmarketcapApi = ''
+coincapApi = ''

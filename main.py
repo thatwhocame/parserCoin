@@ -18,10 +18,21 @@ def help_msg(message):
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
     if message.text.lower() == 'вход':
+        global us_id
         us_id = message.from_user.id
-        us_name = bot.send_message(message.chat.id, 'Напиши свое имя')
-        us_pref = bot.send_message(message.chat.id, 'Напиши про крипту').text
-        bot.register_next_step_handler(us_pref, db_table_val(us_id, str(us_name), str(us_pref)))
+        bot.send_message(message.chat.id, 'Напиши свое имя')
+        bot.register_next_step_handler(message, prefs)
+
+def prefs(message):
+    global us_name
+    us_name = message.text
+    bot.send_message(message.chat.id, 'Напиши про крипту')
+    bot.register_next_step_handler(message, upd)
+
+def upd(message):
+    us_pref = message.text
+    db_table_val(us_id, us_name, us_pref)
+    bot.send_message(message.chat.id, f'Вход выполнен! Проверь правильность введенных данных:\nИмя: {us_name}\nОтслеживаемые монеты: {us_pref}')
 
 
 def main(use_logging, level_name):
